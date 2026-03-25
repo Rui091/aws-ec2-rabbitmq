@@ -1,11 +1,9 @@
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
+from app.common.runtime_config import build_database_url
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql+asyncpg://postgres:postgres@postgres:5432/appdb",
-)
+DATABASE_URL = build_database_url(default_host=os.getenv("DATABASE_HOST", "postgres"))
 
 engine = create_async_engine(DATABASE_URL, echo=False, future=True)
 

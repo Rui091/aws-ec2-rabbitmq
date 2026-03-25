@@ -1,0 +1,28 @@
+aws_region = "us-east-1"
+project_name = "docker-backend"
+environment = "dev"
+
+# Existing network values from your AWS Lab
+vpc_id = "vpc-xxxxxxxx"
+public_subnet_ids = ["subnet-aaaa", "subnet-bbbb"]
+
+# Existing key pair name in EC2
+key_name = "your-key-name"
+
+# Repo that EC2 instances clone to build/run containers
+repo_url = "https://github.com/<user>/<repo>.git"
+repo_branch = "main"
+
+# Optional
+parameter_prefix = "/labs/dev/docker"
+instance_type = "t3.micro"
+ssh_cidr_blocks = ["0.0.0.0/0"]
+
+rabbitmq_user = "guest"
+rabbitmq_pass = "guest"
+postgres_user = "postgres"
+postgres_password = "postgres"
+postgres_db = "appdb"
+
+producer_interval = 5
+max_events = 0

@@ -4,10 +4,11 @@ import os
 import uuid
 
 import aio_pika
+from app.common.runtime_config import build_rabbitmq_url
 
 logger = logging.getLogger(__name__)
 
-RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/")
+RABBITMQ_URL = build_rabbitmq_url(default_host=os.getenv("RABBITMQ_HOST", "rabbitmq"))
 QUEUE_NAME = "tasks_queue"
 
 

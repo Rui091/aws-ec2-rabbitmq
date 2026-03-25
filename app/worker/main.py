@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.orm import DeclarativeBase, Column
 from sqlalchemy import String, DateTime
 from sqlalchemy.dialects.postgresql import UUID
+from app.common.runtime_config import build_database_url, build_rabbitmq_url
 
 # ── Logging ────────────────────────────────────────────────────────────────────
 
@@ -30,11 +31,8 @@ logger = logging.getLogger(__name__)
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 
-RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/")
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql+asyncpg://postgres:postgres@postgres:5432/appdb",
-)
+RABBITMQ_URL = build_rabbitmq_url(default_host=os.getenv("RABBITMQ_HOST", "rabbitmq"))
+DATABASE_URL = build_database_url(default_host=os.getenv("DATABASE_HOST", "postgres"))
 QUEUE_NAME = "tasks_queue"
 MAX_RETRIES = int(os.getenv("MAX_RETRIES", "3"))
 

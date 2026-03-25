@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+
+sudo dnf update -y
+sudo dnf install -y docker git
+sudo systemctl enable docker
+sudo systemctl start docker
+
+sudo rm -rf /opt/app
+sudo git clone --depth 1 --branch '${repo_branch}' '${repo_url}' /opt/app
+cd /opt/app
+
+sudo docker build -t project-api -f Dockerfile.api .
+sudo docker rm -f api || true
+sudo docker run -d --name api --restart unless-stopped \
+  -p 8000:8000 \
+  -e AWS_REGION='${aws_region}' \
+  -e SSM_RABBITMQ_HOST_PARAM='${rabbitmq_param_name}' \
+  -e SSM_DATABASE_HOST_PARAM='${postgres_param_name}' \
+  -e RABBITMQ_USER='${rabbitmq_user}' \
+  -e RABBITMQ_PASS='${rabbitmq_pass}' \
+  -e POSTGRES_USER='${postgres_user}' \
+  -e POSTGRES_PASSWORD='${postgres_password}' \
+  -e POSTGRES_DB='${postgres_db}' \
+  project-api

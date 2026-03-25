@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+sudo dnf update -y
+sudo dnf install -y docker git
+sudo systemctl enable docker
+sudo systemctl start docker
+
+sudo rm -rf /opt/app
+sudo git clone --depth 1 --branch '${repo_branch}' '${repo_url}' /opt/app
+cd /opt/app
+
+sudo docker build -t project-producer -f Dockerfile.producer .
+sudo docker rm -f producer || true
+sudo docker run -d --name producer --restart unless-stopped \
+  -e AWS_REGION='${aws_region}' \
+  -e SSM_API_URL_PARAM='${api_lb_param_name}' \
+  -e PRODUCER_INTERVAL='${producer_interval}' \
+  -e MAX_EVENTS='${max_events}' \
+  project-producer

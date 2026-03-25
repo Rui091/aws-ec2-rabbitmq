@@ -195,6 +195,33 @@ Configured in `.env` (used by docker-compose):
 | `PRODUCER_INTERVAL` | `5` | Seconds between events |
 | `MAX_EVENTS` | `0` | 0 = run forever |
 
+### SSM-based dynamic configuration (EC2/Terraform)
+
+When running on AWS with this repo's Terraform stack, services can resolve hosts from Parameter Store:
+
+| Variable | Description |
+|----------|-------------|
+| `AWS_REGION` | Region used for SSM lookups |
+| `SSM_RABBITMQ_HOST_PARAM` | Parameter name for RabbitMQ host/IP |
+| `SSM_DATABASE_HOST_PARAM` | Parameter name for PostgreSQL host/IP |
+| `SSM_API_URL_PARAM` | Parameter name for API Load Balancer DNS |
+
+Fallback behavior (for local docker-compose) remains unchanged:
+
+- API/Worker default to `rabbitmq` and `postgres` hostnames.
+- Producer defaults to `http://api:8000`.
+
+---
+
+## Terraform / OpenTofu deployment
+
+IaC files are in [terraform/README.md](terraform/README.md) and provision:
+
+- One EC2 per service (`rabbitmq`, `postgres`, `worker`, `producer`)
+- Two EC2 instances for `api`
+- One AWS Application Load Balancer in front of API
+- SSM parameters consumed by app runtime
+
 ---
 
 ## EC2 Deployment Guide

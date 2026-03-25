@@ -10,6 +10,7 @@ import logging
 import os
 
 import httpx
+from app.common.runtime_config import build_api_url
 
 logging.basicConfig(
     format='{"time": "%(asctime)s", "level": "%(levelname)s", "message": "%(message)s"}',
@@ -17,7 +18,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-API_URL = os.getenv("API_URL", "http://api:8000")
+API_URL = build_api_url(default_url=os.getenv("API_URL", "http://api:8000"))
 INTERVAL = float(os.getenv("PRODUCER_INTERVAL", "5"))  # seconds between events
 MAX_EVENTS = int(os.getenv("MAX_EVENTS", "0"))          # 0 = infinite
 
